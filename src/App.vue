@@ -1,22 +1,21 @@
 <script>
-import LoginVue from "./components/Login.vue"
-import Navbar from "./components/Navbar.vue"
+import AppNavbar from "./components/layout/AppNavbar.vue"
 
 export default {
   name: "App",
   components: {
-    LoginVue,
-    Navbar
+    AppNavbar
   }
 }
 </script>
 
 <template>
-<Navbar />
-<router-view></router-view>
+  <AppNavbar/>
+  <router-view></router-view>
 </template>
 
 <style>
-      
-
+body {
+  background-color: #5f5f5f1a !important;
+}
 </style> 
