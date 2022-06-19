@@ -1,16 +1,19 @@
 <template>
   <div class="actu">
     <header class="topbar">
-      <a href="#" class="topbar-logo"><img alt="Groupomania logo" src="../assets/icon-left-font-monochrome-white.svg" /></a>
+      <a href="#" class="topbar-logo"><img alt="Groupomania logo"
+          src="../assets/icon-left-font-monochrome-white.svg" /></a>
       <nav class="topbar-nav">
         <form @submit.prevent="handleUnConect" action="#">
-          <a href="/actu">Accueil</a>
-          <a href="/profil">Profil</a>
-          <button >Deconnexion</button>
+          <a href="/actu"><i class="fa fa-home" aria-hidden="true"></i>Accueil</a>
+          <a href="/profil"><i class="fa fa-user" aria-hidden="true"></i>Profil</a>
+          <button>Deconnexion</button>
         </form>
       </nav>
     </header>
-    <Profil/>
+    <Home />
+    <Profil />
+    <Footer />
   </div>
 </template>
 
@@ -19,11 +22,14 @@
 import axios from "axios"
 import Home from "@/components/Home.vue";
 import Profil from "@/components/Profil.vue";
+import Footer from "@/components/Footer.vue";
 
 export default {
   name: "ProfilView",
     components: {
+      Home,
       Profil,
+      Footer,
   },
   methods: {
     handleUnConect() {

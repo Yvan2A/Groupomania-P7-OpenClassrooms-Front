@@ -5,17 +5,20 @@
     </div>  
     <Login class="login"/>
   </div>
+  <Footer />
 </template>
 
 <script>
 // @ is an alias to /src
 import Login from "@/components/Login.vue";
+import Footer from "@/components/Footer.vue";
 
 
 export default {
   name: "LoginView",
   components: {
     Login,
+    Footer,
   },
 };
 </script>
@@ -27,7 +30,7 @@ export default {
     justify-content: space-between;
     align-items: center;
     max-width: 1050px;
-    height: 100vh;
+    height: 70vh;
     margin: 0 auto;
     .container {
       width: 30%;

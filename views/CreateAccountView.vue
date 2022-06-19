@@ -5,16 +5,20 @@
     </div>
     <Signup/>
   </div>
+  <Footer />
 </template>
 
 <script>
 // @ is an alias to /src
 import Signup from "@/components/Signup.vue";
+import Footer from "@/components/Footer.vue";
+
 
 export default {
   name: "CreateAccountView",
   components: {
     Signup,
+    Footer,
   },
 };
 </script>
@@ -26,7 +30,7 @@ export default {
     justify-content: space-between;
     align-items: center;
     max-width: 1050px;
-    height: 100vh;
+    height: 70vh;
     margin: 0 auto;
     .container {
       width: 30%;
