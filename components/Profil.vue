@@ -1,73 +1,102 @@
 <template>
     <div class="main">
-    <div class="container">
-        <h1>Compte</h1>
-        <div class="card">
-            <div class="card-content">
-                <div class="nom">
-                    Nom : {{user.last_name}}
+        <div class="container">
+            <h1>Compte</h1>
+            <div class="card">
+                <div class="card-img">
+                    <li v-if="user.image">
+                        <img :src="user.image" alt="Photo de profil" class="file" width="200px" height="200px">
+                    </li>
+                    <div>
+                        <button v-if="!user.image" for="file" class="label-file"
+                            aria-label="Choisir la photo de profil"><i class="fa fa-file-image-o"
+                                aria-hidden="true"></i></button>
+                        <button v-else @click="deletefile()" class="label-file"
+                            aria-label="Supprimer la photo de profil"> Supprimer cette photo de profil</button>
+                        <input type="file" accept=".jpeg, .jpg, .png, .webp" v-on:change="uploadFile" id="file"
+                            class="input-file" aria-label="Photo de profil">
+                    </div>
                 </div>
-                <div class="last_name">
-                    Prénom : {{user.name}}
-                </div>
-                <div class="email">
-                    Email : {{user.email}}
-                </div>
+                <div class="card-content">
+                    <div class="nom">
+                        Nom : {{ user.last_name }}
+                    </div>
+                    <div class="last_name">
+                        Prénom : {{ user.name }}
+                    </div>
+                    <div class="email">
+                        Email : {{ user.email }}
+                    </div>
 
+                </div>
+                <form @submit.prevent="deleted" class="form">
+                    <button type="submit" class="btn btn-primary" @clik="deteledData;">
+                        Supprimer mon compte
+                    </button>
+                </form>
             </div>
-            <form @submit.prevent="deleted" class="form">
-                <button type="submit" class="btn btn-primary" @clik="deteledData;">
-                    Supprimer mon compte
-                </button>
-            </form>
         </div>
-    </div>
     </div>
 </template>
 
 <script>
 import axios from "axios"
-    export default {
-        name: 'Profil',
-        data () {
-            return {
-                user: '',
-            }
-        },
-        
-        async created () {
-            const id = localStorage.getItem('userId');
-            const response = await axios.get(`http://localhost:4200/api/auth/user/${id}`, 
-            { 
+export default {
+    name: 'Profil',
+    data() {
+        return {
+            user: '',
+        }
+    },
+
+    async created() {
+        const id = localStorage.getItem('userId');
+        const response = await axios.get(`http://localhost:4200/api/auth/user/${id}`,
+            {
                 headers: {
                     Authorization: 'Bearer ' + localStorage.getItem('token')
                 }
-                
+
             });
-            // console.log('ici');
-            this.user = response.data;   
-        },
-        methods: {
-            async deleted () {
+        // console.log('ici');
+        this.user = response.data;
+    },
+    methods: {
+        async deleted() {
+            if (confirm("Voulez-vous vraiment supprimer le compte") == true) {
                 const id = localStorage.getItem('userId');
                 const response = await axios.delete(`http://localhost:4200/api/auth/user/${id}`,
-                {
-                    headers: {
-                        Authorization: 'Bearer ' + localStorage.getItem('token')
-                    }
-                });
+                    {
+                        headers: {
+                            Authorization: 'Bearer ' + localStorage.getItem('token')
+                        }
+                    });
                 this.user = response.data;
                 localStorage.removeItem('userId');
                 localStorage.removeItem('token');
                 this.$router.push('/login');
                 console.log('deleted');
 
-            },
-        }
-
-
-
+            }
+        },
+        uploadFile(e) {
+            if (e.target.files) {
+                let reader = new FileReader()
+                reader.onload = (event) => {
+                    this.preview = event.target.result
+                    this.user.image = event.target.result
+                }
+                reader.readAsDataURL(e.target.files[0])
+            }
+        },
+        deletefile() {
+            this.user.image = '';
+        },
     }
+
+
+
+}
 </script>
 
 <style lang="scss" scoped>
@@ -80,7 +109,8 @@ import axios from "axios"
     justify-content: space-between;
     margin-top: 50px;
 }
-.container{
+
+.container {
     max-width: 80%;
     display: block;
     margin: auto;
@@ -98,22 +128,27 @@ import axios from "axios"
 input[type="file"] {
     display: none;
 }
+
 input {
     width: calc(100% - 10px);
     overflow: hidden;
-    border:none;
+    border: none;
     background-color: #eee;
     border-radius: 3px;
+
     &:focus {
         outline: none;
         background-color: #fff;
     }
 }
+
 .input-content {
 
     height: 100px;
 }
-button, label {
+
+button,
+label {
     border-radius: 3px;
     border: 1px solid #4E5166;
     background-color: #FD2D01;
@@ -125,20 +160,35 @@ button, label {
     text-transform: uppercase;
     cursor: pointer;
     transition: transform .1s ease-in;
+
     &:active {
         transform: scale(.9);
     }
+
     &:focus {
         outline: none;
     }
 }
+
 .btn-secondary {
     background-color: #4E5166;
     border: 1px solid #fd2d01;
 }
+
 h1 {
     display: flex;
     justify-content: center;
+}
+.label-file{
+    border-radius: 3px;
+        border: 1px solid #fd2d01;
+        background-color: #4E5166;
+        color: #fff;
+        font-weight: bold;
+        padding: 15px;
+}
+.fa-file-image-o {
+    font-size: 25px;
 }
 
 @media only screen and (max-width: 925px) {
@@ -146,10 +196,12 @@ h1 {
         display: flex;
         justify-content: center;
     }
+
     .card {
-        display:flex;
+        display: flex;
         flex-direction: column;
     }
+
     .form {
         display: flex;
         //align-items: center;

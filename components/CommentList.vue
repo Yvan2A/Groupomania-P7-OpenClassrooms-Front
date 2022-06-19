@@ -10,9 +10,14 @@
           </h3>
           <p class="card-content"> {{ comment.content }}</p>
         </div>
-        <button v-if="admin === 'true'" :id="comment.id" class="card-btn" @click="deleteComment"><i class="fa fa-trash"
-            aria-hidden="true"></i>
-        </button>
+        <div class="card-button">
+          <button v-if="comment.UserId == UserId || admin === 'true'" :id="comment.id" class="card-btn"
+            @click="modifyComment"><i class='fas fa-edit' style='color: black'></i>
+          </button>
+          <button v-if="comment.UserId == UserId || admin === 'true'" :id="comment.id" class="card-btn"
+            @click="deleteComment"><i class="fa fa-trash" style='color: black' aria-hidden="true"></i>
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -58,7 +63,11 @@ export default {
           if (response.status == 201) {
             this.emitter.emit("comment-created");
           }
-        });
+        })
+        .catch(error => {
+          alert("Vous n'êtes pas authorisé à supprimer les commentaires des autres utilisateurs")
+          console.log(error)
+        }) 
     },
   },
 };
@@ -79,7 +88,7 @@ h2 {
   font-size: 1.1rem;
   margin: 0;
   color: #ffd7d7;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
 }
 .card {
   border-radius: 5px;
@@ -90,11 +99,16 @@ h2 {
 .card-body {
   display: flex;
   justify-content: space-between;
+  margin-top: 10px;
+}
+.card-button {
+  display: flex;
+  gap: 10px;
 }
 .card-btn {
   border-radius: 3px;
-  border: 1px solid #d05059;
-  background-color: #d05059;
+  border: 1px solid #4e5166;
+  background-color: #ffd7d7;
   color: #fff;
   font-weight: bold;
   margin-bottom: 3px;
@@ -122,7 +136,8 @@ h2 {
 
 @media only screen and (max-width: 925px) {
   .card-btn {
-    padding: 2px;
+    padding: 0 5px;
+    height: 25px;
     font-size: 0.7rem;
   }
 }
