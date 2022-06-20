@@ -40,8 +40,13 @@ const routes = [
     name: "signup",
     component: () =>
     import(/* webpackChunkName: "about" */ "../views/CreateAccountView.vue"),
-
   },
+  {
+  path: '/modify-post/:id',
+		name: 'Modify-Post',
+		component: () => import('../views/Modify-Post.vue'),
+		meta: { requiresAuth: true }
+	},
   // ROUTE PAGE PRINCIPALE
   {
     path: "/actu",
@@ -73,7 +78,7 @@ const router = createRouter({
 // Sécurite d'acces au pages
 router.beforeEach((to, from, next) =>
 {
-  console.log('pas init');
+  // console.log('pas init');
   console.log(to);
   console.log(from);
   const  token  = localStorage.getItem('token');

@@ -4,18 +4,12 @@
             <h1>Compte</h1>
             <div class="card">
                 <div class="card-img">
-                    <li v-if="user.image">
-                        <img :src="user.image" alt="Photo de profil" class="file" width="200px" height="200px">
-                    </li>
-                    <div>
-                        <button v-if="!user.image" for="file" class="label-file"
-                            aria-label="Choisir la photo de profil"><i class="fa fa-file-image-o"
-                                aria-hidden="true"></i></button>
-                        <button v-else @click="deletefile()" class="label-file"
-                            aria-label="Supprimer la photo de profil"> Supprimer cette photo de profil</button>
-                        <input type="file" accept=".jpeg, .jpg, .png, .webp" v-on:change="uploadFile" id="file"
-                            class="input-file" aria-label="Photo de profil">
-                    </div>
+                    <h3>Photo de profil</h3>
+                    <img class="photo_default" :src="photoUrl" alt="Image du profil d'un utilisateur" />
+                    <input type="file" name="avatar" id="user-avatar" @change="imgUploaded()" style="display:none"
+                        aria-label="choisir une image" />
+                    <button class="image-btn" @click.prevent="getFile()"><i class="fa fa-picture-o"
+                            aria-hidden="true"></i></button>
                 </div>
                 <div class="card-content">
                     <div class="nom">
@@ -41,11 +35,15 @@
 
 <script>
 import axios from "axios"
+import photoDefaultUrl from "../assets/avatar_default.png";
 export default {
     name: 'Profil',
     data() {
         return {
             user: '',
+            photoUrl: photoDefaultUrl,
+            photoUrlToUpload: "",
+            avatar: null
         }
     },
 
@@ -60,8 +58,50 @@ export default {
             });
         // console.log('ici');
         this.user = response.data;
-    },
+        },
+        
     methods: {
+
+        // Utilisé pour styliser le input file
+        getFile() {
+            document.querySelector('#user-avatar').click();
+        },
+
+        // Enregistre l'image dans une variable
+        imgUploaded() {
+            const inputFile = document.querySelector('#user-avatar');
+            this.avatar = inputFile.files[0];
+            console.log(this.avatar)
+        },
+        // Assigne une image au profil de l'utilisateur 
+        getUserAvatar() {
+            const userId = localStorage.getItem('id');
+            const formDataUser = new FormData();
+            const token = localStorage.getItem('token');
+            formDataUser.append('image', this.avatar)
+            const options = {
+                headers: {
+                    "Authorization": "Bearer " + token
+                }
+            }
+            axios.put('http://localhost:4200/api/images/' + userId, formDataUser, options)
+                .then((response) => {
+          if (response.status == 401) {
+            this.status = "error_saveUserInfo";
+          } else {
+            response.json().then((formDataUser) => {
+              if (formData.user.photoUrl != "") {
+                this.photoUrl = formDataUser.photoUrl;
+                this.photoUrlToUpload = "";
+              }
+              this.status = "success_saveUserInfo";
+            });
+          }
+        })
+        .catch((error) => console.log(error));
+    },
+
+
         async deleted() {
             if (confirm("Voulez-vous vraiment supprimer le compte") == true) {
                 const id = localStorage.getItem('userId');
@@ -78,19 +118,6 @@ export default {
                 console.log('deleted');
 
             }
-        },
-        uploadFile(e) {
-            if (e.target.files) {
-                let reader = new FileReader()
-                reader.onload = (event) => {
-                    this.preview = event.target.result
-                    this.user.image = event.target.result
-                }
-                reader.readAsDataURL(e.target.files[0])
-            }
-        },
-        deletefile() {
-            this.user.image = '';
         },
     }
 
@@ -118,10 +145,10 @@ export default {
 
 // BODY 
 .card-content {
-    padding: 0 10px;
+    padding:  20px;
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 1.5rem;
     margin: 10px;
 }
 
@@ -169,26 +196,19 @@ label {
         outline: none;
     }
 }
-
-.btn-secondary {
-    background-color: #4E5166;
-    border: 1px solid #fd2d01;
-}
-
 h1 {
     display: flex;
     justify-content: center;
 }
-.label-file{
-    border-radius: 3px;
-        border: 1px solid #fd2d01;
-        background-color: #4E5166;
-        color: #fff;
-        font-weight: bold;
-        padding: 15px;
+.photo_default {
+    width:200px;
+    height: 200px;
 }
-.fa-file-image-o {
-    font-size: 25px;
+.image-btn {
+    padding: 5px;
+    color: white;
+    margin: 0 5px;
+    background-color: #4E5166;
 }
 
 @media only screen and (max-width: 925px) {
@@ -204,7 +224,6 @@ h1 {
 
     .form {
         display: flex;
-        //align-items: center;
         justify-content: center;
     }
 }

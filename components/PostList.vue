@@ -3,23 +3,36 @@
     <div v-for="post in posts" class="card">
       <header class="card-header">
         <div class="card-title">
+          <img class="photo_default" :src="photoUrl" alt="Image du profil d'un utilisateur" />
           {{ post.user.name }} {{ post.user.last_name }}
+          <!-- <p>posté le {{ post.createdAt }}</p> -->
         </div>
         <div class="card-button">
-          <button v-if="post.UserId == UserId || admin === 'true'" class="card-btn" :id="post.id" @click="modifyPost"><i
-              class='fas fa-edit' style='color: white'></i>
+          <button v-if="post.UserId == UserId || admin === 'true'" class="card-btn" :id="post.id" @click="modifyPost(post.id)">
+            <i class="fas fa-edit" aria-hidden="true"></i>
           </button>
-          <button v-if="post.UserId == UserId || admin === 'true'" class="card-btn" :id="post.id" @click="deletePost"><i
-              class="fa fa-trash" aria-hidden="true"></i>
+          <button v-if="post.UserId == UserId || admin === 'true'" class="card-btn" :id="post.id"
+            @click="deletePost(post.id)">
+            <i class="fa fa-trash" aria-hidden="true"></i>
           </button>
         </div>
       </header>
       <div class="card-body">
+
         <h2 class="card-title">{{ post.title }}</h2>
         <p class="card-content">
           {{ post.content }}
         </p>
         <img :src="post.attachment" @change="fileUpload($event)" class="fullwidth" />
+      </div>
+      <div class="card-btn" id="card-like">
+        <!-- <button class="like-button"> -->
+          <!-- <i class="fa fa-thumbs-up" aria-hidden="true"></i> -->
+          <!-- <p class="text-lg">{{ likeCount }}</p> -->
+          <div class="interaction">
+            <Likes :postId="post.id" :userId="userId" />
+            </div>
+        <!-- </button> -->
       </div>
       <div class="card-footer">
         <div class="card-comments">
@@ -34,101 +47,75 @@
 </template>
 
 <script>
-import axios from "axios";
-import CommentList from "@/components/CommentList.vue";
-import CommentCreate from "@/components/CommentCreate.vue";
+import axios from 'axios';
+import Likes from "@/components/Likes.vue";
+import CommentList from '@/components/CommentList.vue';
+import CommentCreate from '@/components/CommentCreate.vue';
+import photoDefaultUrl from '@/assets/avatar_default.png';
+import router from '@/router';
 export default {
-  name: "PostList",
+  name: 'PostList',
   components: {
     CommentList,
     CommentCreate,
+    Likes,
   },
   data() {
     return {
       posts: [],
-      user: localStorage.getItem("userId"),
-      admin: localStorage.getItem("admin"),
+      photoUrl: photoDefaultUrl,
+      photoUrlToUpload: '',
+      like: null,
+      user: localStorage.getItem('userId'),
+      admin: localStorage.getItem('admin'),
     };
   },
 
   async created() {
-    this.emitter.on("post-refresh", this.loadPosts);
-    this.emitter.on("comment-created", this.loadPosts);
+    this.emitter.on('post-refresh', this.loadPosts);
+    this.emitter.on('comment-created', this.loadPosts);
 
     this.loadPosts();
   },
-
+  
   methods: {
     async loadPosts() {
-      const response = await axios.get("http://localhost:4200/api/post", {
+      const response = await axios.get('http://localhost:4200/api/post', {
         headers: {
-          Authorization: "Bearer " + localStorage.getItem("token"),
+          Authorization: 'Bearer ' + localStorage.getItem('token'),
         },
       });
       this.posts = response.data;
     },
-    async deletePost(event) {
-      const id = event.target.id;
-      console.log("id", id);
-      const response = await axios
-        .delete(`http://localhost:4200/api/post/${id}`, {
+    async deletePost(idPost) {
+       axios.delete("http://localhost:4200/api/post/" + idPost, {
           headers: {
-            Authorization: "Bearer " + localStorage.getItem("token"),
+            Authorization: 'Bearer ' + localStorage.getItem('token'),
           },
         })
         .then((response) => {
+          alert("Supprimer ce post ?")
           if (response.status == 201) {
-            this.emitter.emit("post-refresh");
+            this.emitter.emit('post-refresh');
           }
         })
-        .catch(error => {
-          alert("Vous n'êtes pas authorisé à supprimer les posts des autres utilisateurs")
-          console.log(error)
-        }) 
+        .catch((error) => {
+          alert(
+            "Vous n'êtes pas authorisé à supprimer les posts des autres utilisateurs"
+          );
+          console.log(error);
+        });
     },
     fileUpload(event) {
       this.file = event.target.files[0];
     },
-    //request to modify post
-    async modifyPost() {
-      axios.defaults.headers.common['Authorization'] = `Bearer ${this.token}`;
-      const postId = window.location.pathname.split('/')[2];
-      //in the case the image is modified 
-      if (this.file && this.title && this.content) {
-        let formData = new FormData();
-        formData.append('image_url', this.file);
-        formData.append('title', this.title);
-        formData.append('content', this.content);
-        try {
-          await axios.put('http://localhost:4200/api/post' + postId, formData, {
-            headers: {
-              'Content-Type': 'multipart/form-data'
-            }
-          });
-          alert("Votre post a bien été modifié");
-          this.$router.push({ path: '/home' });
-        } catch (error) {
-          console.log("envoi du post a échoué")
-        }
-      } else if (this.title && this.content) { //in the case the image is not modified
-        try {
-          await axios.put('http://localhost:4200/api/post' + postId,
-            {
-              title: this.title,
-              content: this.content
-            });
-          alert("Votre post a bien été modifié");
-          this.$router.push({ path: '/home' });
 
-        } catch (error) {
-          console.log(error);
-        }
-      } else {
-        alert("Vous devez au moins remplir le titre et le contenu du post");
-      }
+    /* vers la page de modification du post (selon son id) */
+    modifyPost(id) {
+      router.push({ path: `/modify-post/${id}` })
     }
-  }
-};
+  }}
+
 </script>
 
 <style lang="scss" scoped>
@@ -167,10 +154,7 @@ export default {
 .card-btn {
   border-radius: 3px;
   border: 1px solid #4e5166;
-  background-color: #d05059;
-  color: #fff;
   font-weight: bold;
-  padding: 10px;
   cursor: pointer;
   transition: transform 0.1s ease-in;
 
@@ -203,6 +187,27 @@ export default {
   margin-bottom: 0;
 }
 
+.photo_default {
+  width: 50px;
+  height: 50px;
+}
+
+#card-like {
+  border: none;
+  display: flex;
+  justify-content: right;
+  margin: 20px;
+}
+
+.like-button {
+  display: flex;
+  align-items: center;
+}
+
+.fa-thumbs-up {
+  display: flex;
+}
+
 @media only screen and (max-width: 925px) {
   .card-btn {
     padding: 5px;
@@ -214,5 +219,8 @@ export default {
     margin: 0;
     display: block;
   }
+    #card-like {
+    margin: 10px;
+}
 }
 </style>

@@ -11,11 +11,11 @@
           <p class="card-content"> {{ comment.content }}</p>
         </div>
         <div class="card-button">
-          <button v-if="comment.UserId == UserId || admin === 'true'" :id="comment.id" class="card-btn"
+          <!-- <button v-if="comment.UserId == UserId || admin === 'true'" :id="comment.id" class="card-btn"
             @click="modifyComment"><i class='fas fa-edit' style='color: black'></i>
-          </button>
+          </button> -->
           <button v-if="comment.UserId == UserId || admin === 'true'" :id="comment.id" class="card-btn"
-            @click="deleteComment"><i class="fa fa-trash" style='color: black' aria-hidden="true"></i>
+            @click="deleteComment(comment.id)"><i class="fa fa-trash" style='color: black' aria-hidden="true"></i>
           </button>
         </div>
       </div>
@@ -50,16 +50,14 @@ export default {
       });
       this.comments = response.data;
     },
-    async deleteComment(event) {
-      const id = event.target.id;
-      console.log("id", id);
-      const response = await axios
-        .delete(`http://localhost:4200/api/comment/${id}`, {
+    async deleteComment(idComment) {
+       axios.delete("http://localhost:4200/api/comment/" + idComment, {
           headers: {
             Authorization: "Bearer " + localStorage.getItem("token"),
           },
         })
         .then((response) => {
+          alert("Supprimer ce commentaire ?")
           if (response.status == 201) {
             this.emitter.emit("comment-created");
           }
@@ -108,13 +106,10 @@ h2 {
 .card-btn {
   border-radius: 3px;
   border: 1px solid #4e5166;
-  background-color: #ffd7d7;
-  color: #fff;
   font-weight: bold;
-  margin-bottom: 3px;
+  height: 25px;
   cursor: pointer;
   transition: transform 0.1s ease-in;
-  padding: 10px;
   &:active {
     transform: scale(0.9);
   }
@@ -137,7 +132,6 @@ h2 {
 @media only screen and (max-width: 925px) {
   .card-btn {
     padding: 0 5px;
-    height: 25px;
     font-size: 0.7rem;
   }
 }
