@@ -41,6 +41,8 @@ export default {
       }
     }
   }
+  
+  
     @media only screen and (max-width: 925px) {
         .home {
             flex-direction: column;
@@ -49,10 +51,12 @@ export default {
             .container {
                 margin: 15px 0;
                 padding: 15px 0;
-                position: absolute;
                 top:0;
                 width:40%;
             }
+        }
+        footer {
+          margin-top: 100px;
         }
     }
 

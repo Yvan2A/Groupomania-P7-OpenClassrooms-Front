@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <div class="container">
-      <img alt="Groupomania logo" src="../assets/icon-above-font.svg" />
+      <img alt="Groupomania logo" id="logo" src="../assets/icon-above-font.svg" />
     </div>  
     <Login class="login"/>
   </div>
@@ -49,7 +49,6 @@ export default {
       .container {
         margin: 15px 0;
         padding: 15px 0;
-        // position: absolute;
         top:0;
         width:40%;
       }

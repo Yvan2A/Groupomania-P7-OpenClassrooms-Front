@@ -1,71 +1,50 @@
 import { createRouter, createWebHistory } from "vue-router";
 import LoginView from "../views/LoginView.vue";
-import axios from "axios"
-
-// const token ="";
-// function loadUserCredentials() {
-//   token = window.localStorage.getItem(LOCAL_TOKEN_KEY);
-//   if (token) {
-//      useCredentials(token);
-//    }
-// }
-
-// const ifAuthenticated = (to, from, next) => {
-//   if (localStorage.getItem(token)) {
-    
-//     next();
-//     return;
-//   }
-//   router.push({ 
-//     name: 'home',
-//     params: {
-//       returnTo: to.path,
-//       query: to.query,
-//     },
-//   });
-//  };
-
 
 
 const routes = [
   // ROUTES USERS
   {
-    path: "/login",
-    name: "login",
+    path: '/',
+    redirect: '/login',
+    name: 'login',
     component: LoginView,
-
   },
   {
-    path: "/signup",
-    name: "signup",
+    path: '/login',
+    name: 'login',
+    component: LoginView,
+  },
+  {
+    path: '/signup',
+    name: 'signup',
     component: () =>
-    import(/* webpackChunkName: "about" */ "../views/CreateAccountView.vue"),
+      import(/* webpackChunkName: "about" */ '../views/CreateAccountView.vue'),
   },
-  {
-  path: '/modify-post/:id',
-		name: 'Modify-Post',
-		component: () => import('../views/Modify-Post.vue'),
-		meta: { requiresAuth: true }
-	},
+
   // ROUTE PAGE PRINCIPALE
   {
-    path: "/actu",
-    name: "actu",
+    path: '/actu',
+    name: 'actu',
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
     component: () =>
-      import(/* webpackChunkName: "about" */ "../views/ActuView.vue"),
+      import(/* webpackChunkName: "about" */ '../views/ActuView.vue'),
   },
   {
-    path: "/profil",
-    name: "profil",
+    path: '/profil',
+    name: 'profil',
     component: () =>
-    import(/* webpackChunkName: "about" */ "../views/ProfilView.vue"),
-
+      import(/* webpackChunkName: "about" */ '../views/ProfilView.vue'),
   },
   // ROUTES GESTION DES POST USERS
-
+  {
+    path: '/modify-post/:id',
+    name: 'Modify-Post',
+    component: () => import('../views/Modify-Post.vue'),
+    meta: { requiresAuth: true },
+  },
   // ROUTES GESTION DES COMMENTAIRES USERS
 ];
 

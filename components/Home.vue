@@ -29,5 +29,6 @@
 <style lang="scss" scoped>
 h3 {
 color: #4E5166;
+font-size: 1.5rem;
 }
 </style>

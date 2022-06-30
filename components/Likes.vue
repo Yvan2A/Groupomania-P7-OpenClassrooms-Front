@@ -10,6 +10,7 @@
 </template>
 
 <script>
+import axios from 'axios';
 export default {
     name: 'Likes',
     props: {
@@ -23,9 +24,9 @@ export default {
         }
     },
     methods: {
-        /* fetch des Likes en fonction de l'id du post concerné */      
-        async fetchLikes(postId) {
-            const resLikes = await fetch(`http://localhost:4200/api/post/${JSON.stringify(postId)}/likes`)
+        /* axios des Likes en fonction de l'id du post concerné */      
+        async axiosLikes(postId) {
+            const resLikes = await axios.get(`http://localhost:4200/api/post/${JSON.stringify(postId)}/likes`)
             const dataLikes = await resLikes.json()
             dataLikes.forEach(like => {
             like.userId == this.userId ? this.liked = true : this.like = false // <- ici on vérifie si notre user à déjà liker ce post
@@ -39,8 +40,8 @@ export default {
                 userId: this.userId,
                 postId: postId
             }
-            fetch(`http://localhost:4200/api/post/${JSON.stringify(postId)}/like`, {
-                method: 'POST',
+            axios.post(`http://localhost:4200/api/post/${JSON.stringify(postId)}/like`, {
+                
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -56,8 +57,8 @@ export default {
             const data = {
                 userId: this.userId
             }
-            fetch(`http://localhost:4200/api/post/${JSON.stringify(postId)}/unlike`, {
-                method: 'DELETE',
+            axios.delete(`http://localhost:4200/api/post/${JSON.stringify(postId)}/unlike`, {
+                
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -68,7 +69,7 @@ export default {
         }
     },
     async created() {
-        this.likes = await this.fetchLikes(this.postId)
+        this.likes = await this.axiosLikes(this.postId)
     }
 }
 </script>

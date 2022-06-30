@@ -14,7 +14,7 @@
           <!-- <button v-if="comment.UserId == UserId || admin === 'true'" :id="comment.id" class="card-btn"
             @click="modifyComment"><i class='fas fa-edit' style='color: black'></i>
           </button> -->
-          <button v-if="comment.UserId == UserId || admin === 'true'" :id="comment.id" class="card-btn"
+          <button v-if="comment.userId == user || admin === 'true'" :id="comment.id" class="card-btn"
             @click="deleteComment(comment.id)"><i class="fa fa-trash" style='color: black' aria-hidden="true"></i>
           </button>
         </div>

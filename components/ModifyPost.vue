@@ -1,20 +1,26 @@
 <template>
+    <h1>Modification du post</h1>
     <div id="modifyPost">
         <form @submit.prevent="modifyPost">
             <div id="btns">
                 <label class="modify-btn" for="file">Choisir une nouvelle image</label>
                 <input type="file" ref="file" name="file" class="upload" id="file" @change="updateFile">
             </div>
-            <!-- <div id="fileContainer">
+            <div id="fileContainer">
                 <img id="preview" :src="'http://localhost:4200/images/' + post.file" :alt="post.file" v-if="preview">
                 <p v-else>Ce post ne possède pas d'image</p>
-            </div> -->
+            </div>
             <div id="text">
                 <label class="modify-btn" for="textarea">Changer votre texte</label>
                 <textarea name="textarea" v-model="post.text"></textarea>
             </div>
             <div id="modify">
                 <input type="submit" value="Publier !" class="btn">
+            </div>
+            <div>
+                <i class="fa fa-arrow-left" aria-hidden="true"></i>
+                <router-link :to="`/actu`" class="button-lien" aria-label="Retour au fil d'actualité">
+                    Annuler</router-link>
             </div>
         </form>
     </div>
@@ -38,24 +44,23 @@ export default {
             .then(res => res.json())
             .then(data => {
                 data.file ? this.preview = true : this.preview = false
-                this.post = {...data}
+                this.post = { ...data }
             })
-            .catch(error => {error})
+            .catch(error => { error })
     },
     data() {
         return {
             post: {},
             newFile: '',
             preview: null,
-
         }
     },
     methods: {
         updateFile(event) {
-            /* sur le onchange on va attribuer cette valeur à file (nécessaire pour l'envoi au backend) */ 
+            /* sur le onchange on va attribuer cette valeur à file (nécessaire pour l'envoi au backend) */
             this.newFile = this.$refs.file.files[0]
             let input = event.target
-            if(input.files) {
+            if (input.files) {
                 let reader = new FileReader()
                 reader.onload = (e) => {
                     document.getElementById('preview').src = e.target.result
@@ -65,7 +70,7 @@ export default {
             }
         },
         async modifyPost() {
-            /* on peut envoyer un post sans image mais il faut au moins qu'il y est un texte */     
+            /* on peut envoyer un post sans image mais il faut au moins qu'il y est un texte */
             if (!this.post.text) {
                 this.errMsg = "Error => vous devez remplir le champ <message> pour créer une nouvelle publication!"
                 return
@@ -82,52 +87,67 @@ export default {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem('token')}`
                     },
-                })  
+                })
                     .then(res => {
                         console.log(res.data)
-                        router.push({ path: '/home' })                                               
+                        router.push({ path: '/actu' })
                     })
                     .catch(error => console.log(error))
-            }            
+            }
         }
     }
 }
 </script>
 
 <style scoped>
+h1 {
+    color: #fd2d01;
+    border: 2px solid #4e5166;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+}
 #modifyPost {
     max-width: 60%;
     box-shadow: 2px 2px 8px 5px rgb(0 0 0 / 10%);
     margin: auto;
     margin-top: 2rem;
-    padding: 1rem;
+    padding: 3rem;
     border-radius: 4px;
     background-color: #ffffff;
 }
+
 form {
     display: flex;
     flex-direction: column;
 }
+
 #fileContainer {
     overflow: hidden;
     margin: 1rem 0 1rem 0;
 }
+
 img {
     height: 100%;
     width: 100%;
     object-fit: cover;
 }
+
 #btns {
     display: flex;
     flex-direction: column;
 }
+
 #file {
     cursor: pointer;
+    margin: 20px;
 }
+
 #text {
     display: flex;
     flex-direction: column;
 }
+
 label {
     margin: 1rem;
     padding: 0.5rem 0;
@@ -135,14 +155,18 @@ label {
     border-radius: 8px;
     box-shadow: 2px 2px 8px 5px rgb(0 0 0 / 10%);
 }
+
 textarea {
     padding: 16px;
+    margin: 20px;
 }
+
 #modify {
     text-align: right;
 }
+
 .btn {
-    background-color: #4e5166;
+    background-color: #fd2d01;
     border-style: none;
     outline: none;
     width: 20%;
@@ -151,10 +175,25 @@ textarea {
     color: white;
     margin: 1rem 0 1rem 0;
 }
-.modify-btn{
+.button-lien{
+    text-decoration: none;
+    color: black;
+    font-size: 1rem;
+    border: 1px solid #4e5166;
+    border-radius: 4px;
+    box-shadow: 2px 2px 8px 5px rgb(0 0 0 / 10%);
+    margin-left: 10px;
+    background-color: #ffd7d7;
+    padding: 5px 30px;
+
+}
+
+.modify-btn {
     background-color: #4e5166;
     color: #ffffff;
+    margin-bottom: 25px;
 }
+
 @media screen and (max-width: 992px) {
     #modifyPost {
         max-width: 90%;

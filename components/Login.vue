@@ -2,8 +2,11 @@
     <div class="main">
         <div class="container">
             <form @submit.prevent="loginSubmit" class="Login" action="#">
-                <input type="email" v-model="email" placeholder="Email"/>
-                <input type="password" v-model="password" placeholder="Password"/>
+                <input type="email" v-model="email" placeholder="Email" required />
+                <input type="password" v-model="password" placeholder="Password"
+                    pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
+                    title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters"
+                    required />
                 <button>Connexion</button>
                 <a href="#">Mot de passe oublié ?</a>
                 <button class="btn btn-secondary" @click="$router.push('signup')">Créer un compte</button>
@@ -30,6 +33,7 @@ export default {
         // recuperation des informations de compte login
         // envoie des informations de login a l'api
         async loginSubmit () {
+            try {
             const response = await axios.post('http://localhost:4200/api/auth/login', {
                 email: this.email,
                 password: this.password
@@ -37,7 +41,12 @@ export default {
             localStorage.setItem('token', response.data.token);
             localStorage.setItem('userId', response.data.userId);
             localStorage.setItem('admin', response.data.admin);
+            
             this.$router.push('actu');
+        } catch (error){
+            alert("Votre adresse mail ou mot de passe ne fonctionne pas");
+        }
+
         },
     }
 };

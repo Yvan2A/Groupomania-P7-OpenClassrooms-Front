@@ -4,14 +4,14 @@
       <header class="card-header">
         <div class="card-title">
           <img class="photo_default" :src="photoUrl" alt="Image du profil d'un utilisateur" />
-          {{ post.user.name }} {{ post.user.last_name }}
-          <!-- <p>posté le {{ post.createdAt }}</p> -->
+          {{ post.user.name }} {{ post.user.last_name }}<br>
+          <span>posté {{ moment(post.createdAt).locale("fr").fromNow() }}</span>
         </div>
         <div class="card-button">
-          <button v-if="post.UserId == UserId || admin === 'true'" class="card-btn" :id="post.id" @click="modifyPost(post.id)">
+          <button v-if="post.userId == user" class="card-btn" :id="post.id" @click="modifyPost(post.id)">
             <i class="fas fa-edit" aria-hidden="true"></i>
           </button>
-          <button v-if="post.UserId == UserId || admin === 'true'" class="card-btn" :id="post.id"
+          <button v-if="post.userId == user || admin === 'true'" class="card-btn" :id="post.id"
             @click="deletePost(post.id)">
             <i class="fa fa-trash" aria-hidden="true"></i>
           </button>
@@ -26,13 +26,9 @@
         <img :src="post.attachment" @change="fileUpload($event)" class="fullwidth" />
       </div>
       <div class="card-btn" id="card-like">
-        <!-- <button class="like-button"> -->
-          <!-- <i class="fa fa-thumbs-up" aria-hidden="true"></i> -->
-          <!-- <p class="text-lg">{{ likeCount }}</p> -->
-          <div class="interaction">
-            <Likes :postId="post.id" :userId="userId" />
-            </div>
-        <!-- </button> -->
+        <div class="interaction">
+          <Likes :postId="post.id" :userId="userId" />
+        </div>
       </div>
       <div class="card-footer">
         <div class="card-comments">
@@ -47,12 +43,15 @@
 </template>
 
 <script>
+let moment = require("moment");
 import axios from 'axios';
 import Likes from "@/components/Likes.vue";
 import CommentList from '@/components/CommentList.vue';
 import CommentCreate from '@/components/CommentCreate.vue';
 import photoDefaultUrl from '@/assets/avatar_default.png';
 import router from '@/router';
+// import { DateTime } from "luxon";
+
 export default {
   name: 'PostList',
   components: {
@@ -68,15 +67,37 @@ export default {
       like: null,
       user: localStorage.getItem('userId'),
       admin: localStorage.getItem('admin'),
+      moment: moment,
+
     };
   },
-
+  
   async created() {
     this.emitter.on('post-refresh', this.loadPosts);
     this.emitter.on('comment-created', this.loadPosts);
 
     this.loadPosts();
   },
+  // formatedDate() {
+  //   const today = DateTime.now();
+  //   let dateArticle = DateTime.fromISO(this.date);
+  //   let diff = today.diff(dateArticle, ['years', 'months', 'days']);
+  //   if (diff.years == 0 && diff.months == 0) {
+  //     if (diff.days <= 1) {
+  //       return " aujourd'hui";
+  //     } else if (diff.days <= 2) {
+  //       return " hier.";
+  //     } else {
+  //       return " il y a " + Math.round(diff.days) + " jours.";
+  //     }
+  //   } else if (diff.years == 0) {
+  //     return " il y a " + Math.round(diff.months) + " mois.";
+  //   } else if (Math.round(diff.years) == 1) {
+  //     return " il y a 1 an.";
+  //   } else {
+  //     return " il y a " + Math.round(diff.years) + " ans";
+  //   }
+  // },
   
   methods: {
     async loadPosts() {
@@ -111,10 +132,9 @@ export default {
     },
 
     /* vers la page de modification du post (selon son id) */
-    modifyPost(id) {
+  modifyPost(id) {
       router.push({ path: `/modify-post/${id}` })
-    }
-  }}
+  }}}
 
 </script>
 
@@ -206,6 +226,11 @@ export default {
 
 .fa-thumbs-up {
   display: flex;
+}
+
+span {
+  font-size: small;
+  color: #dbdbdb;
 }
 
 @media only screen and (max-width: 925px) {

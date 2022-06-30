@@ -131,4 +131,11 @@ font-size: 35px;
     padding: 0;
   }
 }
+
+@media only screen and (max-width: 925px) {
+h1,
+  p, h3 {
+    font-size: 20px;
+  }
+}
 </style>
