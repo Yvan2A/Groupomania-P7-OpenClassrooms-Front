@@ -5,16 +5,17 @@
                 <input type="text" v-model="name" placeholder="Prénom" required pattern="[A-Za-z' -]+" />
                 <input type="text" v-model="last_name" placeholder="Nom de famille" required pattern="[A-Za-z' -]+" />
                 <input type="email" v-model="email" placeholder="Email" required />
-                <input type="password" v-model="password" placeholder="Password" id="psw" name="psw"
-                    pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
+                <input type="password" v-model="password" placeholder="Password" id="psw" name="psw" @focus="onFocus()"
+                    @blur="onBlur()" @keypress.enter="onKeyUp()" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
                     title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters"
                     required />
                 <i class="fas fa-eye" @click="showPassword()" id="eye"></i>
-                <input type="password" v-model="confirm_password" placeholder="Confirm Password"
-                    pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
+                <input type="password" v-model="confirm_password" placeholder="Confirm Password" id="pswconfirm" 
+                    @focus="onFocus()" @blur="onBlur()" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
                     title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters"
                     required />
-                
+                <i class="fas fa-eye" @click="showConfirmPassword()" id="eye2"></i>
+
                 <div id="message" class="message">
                     <h3>Password must contain the following:</h3>
                     <p id="letter" class="invalid">A <b>lowercase</b> letter</p>
@@ -35,63 +36,6 @@
 
 <script>
 import axios from 'axios';
-
-// let myInput = document.getElementById("psw");
-// let letter = document.getElementById("letter");
-// let capital = document.getElementById("capital");
-// let number = document.getElementById("number");
-// let length = document.getElementById("length");
-
-// When the user clicks on the password field, show the message box
-// myInput.onfocus = function () {
-//     document.getElementById("message").style.display = "block";
-// }
-
-// When the user clicks outside of the password field, hide the message box
-// myInput.onblur = function () {
-//     document.getElementById("message").style.display = "none";
-// }
-
-// When the user starts to type something inside the password field
-// myInput.onkeyup = function () {
-//     // Validate lowercase letters
-//     let lowerCaseLetters = /[a-z]/g;
-//     if (myInput.value.match(lowerCaseLetters)) {
-//         letter.classList.remove("invalid");
-//         letter.classList.add("valid");
-//     } else {
-//         letter.classList.remove("valid");
-//         letter.classList.add("invalid");
-//     }
-//     // Validate capital letters
-//     let upperCaseLetters = /[A-Z]/g;
-//     if (myInput.value.match(upperCaseLetters)) {
-//         capital.classList.remove("invalid");
-//         capital.classList.add("valid");
-//     } else {
-//         capital.classList.remove("valid");
-//         capital.classList.add("invalid");
-//     }
-
-//     // Validate numbers
-//     let numbers = /[0-9]/g;
-//     if (myInput.value.match(numbers)) {
-//         number.classList.remove("invalid");
-//         number.classList.add("valid");
-//     } else {
-//         number.classList.remove("valid");
-//         number.classList.add("invalid");
-//     }
-
-//     // Validate length
-//     if (myInput.value.length >= 8) {
-//         length.classList.remove("invalid");
-//         length.classList.add("valid");
-//     } else {
-//         length.classList.remove("valid");
-//         length.classList.add("invalid");
-//     }
-// }
 
 let e = true;
 
@@ -116,6 +60,66 @@ export default {
     },
     methods: {
 
+        
+    // When the user clicks on the password field, show the message box
+        onFocus() {
+            document.getElementById("message").style.display = "block";
+        },
+
+    // When the user clicks outside of the password field, hide the message box
+        onBlur() {
+            document.getElementById("message").style.display = "none";
+        },
+
+    // When the user starts to type something inside the password field
+        onKeyUp() {
+
+        let myInput = document.getElementById("psw");
+        let letter = document.getElementById("letter");
+        let capital = document.getElementById("capital");
+        let number = document.getElementById("number");
+        let length = document.getElementById("length");
+
+            // Validate lowercase letters
+            let lowerCaseLetters = /[a-z]/g;
+            if (myInput.value.match(lowerCaseLetters)) {
+                letter.classList.remove("invalid");
+                letter.classList.add("valid");
+            } else {
+                letter.classList.remove("valid");
+                letter.classList.add("invalid");
+            }
+            // Validate capital letters
+            let upperCaseLetters = /[A-Z]/g;
+            if (myInput.value.match(upperCaseLetters)) {
+                capital.classList.remove("invalid");
+                capital.classList.add("valid");
+            } else {
+                capital.classList.remove("valid");
+                capital.classList.add("invalid");
+            }
+
+            // Validate numbers
+            let numbers = /[0-9]/g;
+            if (myInput.value.match(numbers)) {
+                number.classList.remove("invalid");
+                number.classList.add("valid");
+            } else {
+                number.classList.remove("valid");
+                number.classList.add("invalid");
+            }
+
+            // Validate length
+            if (myInput.value.length >= 8) {
+                length.classList.remove("invalid");
+                length.classList.add("valid");
+            } else {
+                length.classList.remove("valid");
+                length.classList.add("invalid");
+            }
+        },
+
+
         // Affiche le mot de passe en clair
         showPassword() {
             const eye = document.querySelector('#eye');
@@ -130,6 +134,22 @@ export default {
                 e = true;
             }
         },
+
+        showConfirmPassword() {
+            const eye = document.querySelector('#eye2');
+            if (e) {
+                document.querySelector('#pswconfirm').setAttribute("type", "text");
+                eye.classList.replace("fa-eye", "fa-eye-slash");
+                e = false;
+            }
+            else {
+                document.querySelector('#pswconfirm').setAttribute("type", "password");
+                eye.classList.replace("fa-eye-slash", "fa-eye");
+                e = true;
+            }
+        },
+
+
         // recuperation des informations de compte
         // envoi des information de compte a l'api
         async handleSubmit() {
@@ -174,7 +194,7 @@ export default {
 
 .message p {
     padding: 10px 35px;
-    font-size: 18px;
+    font-size: 15px;
 }
 
 /* Add a green text color and a checkmark when the requirements are right */
@@ -287,9 +307,13 @@ form {
         margin-right: 15px;
     }
 
-    #eye {
+    #eye{
         margin-left: 300px;
         position: absolute;
+    }
+    #eye2{
+        position:absolute;
+        margin: 130px 0 0 300px;
     }
 }
 </style>

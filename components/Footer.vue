@@ -22,7 +22,7 @@ ul {
     align-items: center;
     padding: 0;
     list-style: none;
-    
+    margin-top: 100px;
 }
 
 li {
