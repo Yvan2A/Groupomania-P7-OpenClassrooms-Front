@@ -50,7 +50,6 @@ import CommentList from '@/components/CommentList.vue';
 import CommentCreate from '@/components/CommentCreate.vue';
 import photoDefaultUrl from '@/assets/avatar_default.png';
 import router from '@/router';
-// import { DateTime } from "luxon";
 
 export default {
   name: 'PostList',
@@ -78,30 +77,10 @@ export default {
 
     this.loadPosts();
   },
-  // formatedDate() {
-  //   const today = DateTime.now();
-  //   let dateArticle = DateTime.fromISO(this.date);
-  //   let diff = today.diff(dateArticle, ['years', 'months', 'days']);
-  //   if (diff.years == 0 && diff.months == 0) {
-  //     if (diff.days <= 1) {
-  //       return " aujourd'hui";
-  //     } else if (diff.days <= 2) {
-  //       return " hier.";
-  //     } else {
-  //       return " il y a " + Math.round(diff.days) + " jours.";
-  //     }
-  //   } else if (diff.years == 0) {
-  //     return " il y a " + Math.round(diff.months) + " mois.";
-  //   } else if (Math.round(diff.years) == 1) {
-  //     return " il y a 1 an.";
-  //   } else {
-  //     return " il y a " + Math.round(diff.years) + " ans";
-  //   }
-  // },
-  
+
   methods: {
     async loadPosts() {
-      const response = await axios.get('http://localhost:4200/api/post', {
+      const response = await axios.get('http://localhost:3000/api/post', {
         headers: {
           Authorization: 'Bearer ' + localStorage.getItem('token'),
         },
@@ -109,7 +88,7 @@ export default {
       this.posts = response.data;
     },
     async deletePost(idPost) {
-       axios.delete("http://localhost:4200/api/post/" + idPost, {
+       axios.delete("http://localhost:3000/api/post/" + idPost, {
           headers: {
             Authorization: 'Bearer ' + localStorage.getItem('token'),
           },

@@ -43,7 +43,7 @@ export default {
   },
   methods: {
     async loadComments() {
-      const response = await axios.get("http://localhost:4200/api/comment", {
+      const response = await axios.get("http://localhost:3000/api/comment", {
         headers: {
           Authorization: "Bearer " + localStorage.getItem("token"),
         },
@@ -51,7 +51,7 @@ export default {
       this.comments = response.data;
     },
     async deleteComment(idComment) {
-       axios.delete("http://localhost:4200/api/comment/" + idComment, {
+       axios.delete("http://localhost:3000/api/comment/" + idComment, {
           headers: {
             Authorization: "Bearer " + localStorage.getItem("token"),
           },

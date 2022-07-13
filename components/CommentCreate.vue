@@ -30,7 +30,7 @@ export default {
     async createComment() {
       const userid = parseInt(localStorage.getItem("userId"));
       const response = await axios.post(
-        "http://localhost:4200/api/comment",
+        "http://localhost:3000/api/comment",
         {
           content: this.content,
           postId: this.id,

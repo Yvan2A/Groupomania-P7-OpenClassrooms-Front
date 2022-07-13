@@ -49,7 +49,7 @@ export default {
 
     async created() {
         const id = localStorage.getItem('userId');
-        const response = await axios.get(`http://localhost:4200/api/auth/user/${id}`,
+        const response = await axios.get(`http://localhost:3000/api/auth/user/${id}`,
             {
                 headers: {
                     Authorization: 'Bearer ' + localStorage.getItem('token')
@@ -84,7 +84,7 @@ export default {
                     "Authorization": "Bearer " + token
                 }
             }
-            axios.put('http://localhost:4200/api/images/' + userId, formDataUser, options)
+            axios.put('http://localhost:3000/api/images/' + userId, formDataUser, options)
                 .then((response) => {
           if (response.status == 401) {
             this.status = "error_saveUserInfo";
@@ -105,7 +105,7 @@ export default {
         async deleted() {
             if (confirm("Voulez-vous vraiment supprimer le compte") == true) {
                 const id = localStorage.getItem('userId');
-                const response = await axios.delete(`http://localhost:4200/api/auth/user/${id}`,
+                const response = await axios.delete(`http://localhost:3000/api/auth/user/${id}`,
                     {
                         headers: {
                             Authorization: 'Bearer ' + localStorage.getItem('token')

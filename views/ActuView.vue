@@ -25,7 +25,7 @@
 </template>
 <script>
 // @ is an alias to /src
-import axios from "axios";
+// import axios from "axios";
 import Home from "@/components/Home.vue";
 import PostList from "@/components/PostList.vue";
 import PostCreate from "@/components/PostCreate.vue";
@@ -42,7 +42,6 @@ export default {
 
   methods: {
     handleUnConect() {
-      console.log("je veux me deco");
       localStorage.removeItem("userId");
       localStorage.removeItem("token");
       this.$router.push("/login");

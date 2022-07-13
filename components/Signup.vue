@@ -155,7 +155,7 @@ export default {
         async handleSubmit() {
             try {
                 const response = await axios.post(
-                    'http://localhost:4200/api/auth/signup',
+                    'http://localhost:3000/api/auth/signup',
                     {
                         name: this.name,
                         last_name: this.last_name,
@@ -164,7 +164,7 @@ export default {
                         confirm_password: this.confirm_password,
                     }
                 );
-                const log = await axios.post('http://localhost:4200/api/auth/login', {
+                const log = await axios.post('http://localhost:3000/api/auth/login', {
                     email: this.email,
                     password: this.password,
                 });

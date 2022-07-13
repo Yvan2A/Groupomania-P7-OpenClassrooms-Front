@@ -26,7 +26,7 @@ export default {
     methods: {
         /* axios des Likes en fonction de l'id du post concerné */      
         async axiosLikes(postId) {
-            const resLikes = await axios.get(`http://localhost:4200/api/post/${JSON.stringify(postId)}/likes`)
+            const resLikes = await axios.get(`http://localhost:3000/api/post/${JSON.stringify(postId)}/likes`)
             const dataLikes = await resLikes.json()
             dataLikes.forEach(like => {
             like.userId == this.userId ? this.liked = true : this.like = false // <- ici on vérifie si notre user à déjà liker ce post
@@ -40,7 +40,7 @@ export default {
                 userId: this.userId,
                 postId: postId
             }
-            axios.post(`http://localhost:4200/api/post/${JSON.stringify(postId)}/like`, {
+            axios.post(`http://localhost:3000/api/post/${JSON.stringify(postId)}/like`, {
                 
                 headers: {
                     'Content-Type': 'application/json',
@@ -57,7 +57,7 @@ export default {
             const data = {
                 userId: this.userId
             }
-            axios.delete(`http://localhost:4200/api/post/${JSON.stringify(postId)}/unlike`, {
+            axios.delete(`http://localhost:3000/api/post/${JSON.stringify(postId)}/unlike`, {
                 
                 headers: {
                     'Content-Type': 'application/json',

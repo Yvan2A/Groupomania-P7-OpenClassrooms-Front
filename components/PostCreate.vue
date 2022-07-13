@@ -68,7 +68,7 @@ export default {
         console.log("thisid", id);
         console.log(formData);
         const response = await axios
-          .post("http://localhost:4200/api/post", formData, {
+          .post("http://localhost:3000/api/post", formData, {
             headers: {
               // 'Content-Type': 'multipart/form-data',
               Authorization: "Bearer " + localStorage.getItem("token"),
@@ -88,7 +88,7 @@ export default {
         formData.append("content", this.content);
         formData.append("userId", id);
         const response = await axios
-          .post("http://localhost:4200/api/post", formData, {
+          .post("http://localhost:3000/api/post", formData, {
             headers: {
               // 'Content-Type': 'multipart/form-data',
               Authorization: "Bearer " + localStorage.getItem("token"),

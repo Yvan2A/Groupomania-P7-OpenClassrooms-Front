@@ -7,8 +7,8 @@
                 <input type="file" ref="file" name="file" class="upload" id="file" @change="updateFile">
             </div>
             <div id="fileContainer">
-                <img id="preview" :src="'http://localhost:4200/images/' + post.file" :alt="post.file" v-if="preview">
-                <p v-else>Ce post ne possède pas d'image</p>
+                <img id="preview" name="images" :src="'http://localhost:3000/images/' + post.file" :alt="post.file" v-if="preview">
+                <p v-else>Ce post ne possède pas d'image, voulez-vous en ajouter une ?</p>
             </div>
             <div id="text">
                 <label class="modify-btn" for="textarea">Changer votre texte</label>
@@ -22,6 +22,7 @@
                 <router-link :to="`/actu`" class="button-lien" aria-label="Retour au fil d'actualité">
                     Annuler</router-link>
             </div>
+            <p>{{errMsg}}</p>
         </form>
     </div>
 </template>
@@ -36,7 +37,7 @@ export default {
         const parsedUrl = new URL(window.location.href)
         const postId = parsedUrl.pathname.split('/modify-post/')[1]
         /* selon l'id on récupère le post concerné */
-        fetch(`http://localhost:4200/api/post/${postId}`, {
+        fetch(`http://localhost:3000/api/post/${postId}`, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem('token')}`
             }
@@ -53,6 +54,7 @@ export default {
             post: {},
             newFile: '',
             preview: null,
+            errMsg: null
         }
     },
     methods: {
@@ -72,18 +74,18 @@ export default {
         async modifyPost() {
             /* on peut envoyer un post sans image mais il faut au moins qu'il y est un texte */
             if (!this.post.text) {
-                this.errMsg = "Error => vous devez remplir le champ <message> pour créer une nouvelle publication!"
+                this.errMsg = "Merci de bien vouloir remplir le champ <changer votre texte> pour créer une nouvelle publication!"
                 return
             }
             /* on créé un objet formData afin de pouvoir ajouter le texte et surtout le file choisi */
             let formData = new FormData()
             formData.append('text', this.post.text)
             if (this.newFile) {
-                formData.append('file', this.newFile)
+                formData.append('images', this.newFile)
             }
             /* envoi du form via axios.put de l'objet formData */
             if (confirm("êtes vous sûr de vouloir modifier votre post ?")) {
-                axios.put(`http://localhost:4200/api/post/${this.post.id}`, formData, {
+                axios.put(`http://localhost:3000/api/post/${this.post.id}`, formData, {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem('token')}`
                     },
